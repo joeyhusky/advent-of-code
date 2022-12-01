@@ -2,7 +2,7 @@ const text = await Deno.readTextFile("./input.txt");
 
 const items = text.split('\n');
 
-let idx = 0;
+
 let curCount = 0;
 let max = -Infinity;
 
@@ -12,8 +12,6 @@ for (const food of items) {
     curCount += count;
   } else {
     max = Math.max(max, curCount);
-    // elfFoodMap.set(idx, curCount);
-    idx++;
     curCount = 0;
   }
 }
