@@ -6,19 +6,19 @@ const main = async () => {
   for (const round of rounds) {
     const [enemy, _, me] = round;
     if (!enemy || !me) continue;
-    // console.log(`enemy: ${enemy}, me: ${me}`);
     const enemyPlay = enemyMap[enemy];
-    const myPlay = map[me];
-    const score = calculateScore(myPlay, enemyPlay);
+    const expectedOutcome = expectedOutcomeMap[me];
+    const myPlay = determinePlay(expectedOutcome, enemyPlay);
+    const score = calculateScore(myPlay!, enemyPlay);
     overallScore += score;
   }
   console.log("overall score: ", overallScore);
 };
 
-const map: MoveDecoder = {
-  X: "rock",
-  Y: "paper",
-  Z: "scissors",
+const expectedOutcomeMap: { [input: string]: Outcome } = {
+  X: "loss",
+  Y: "draw",
+  Z: "win",
 } as const;
 
 const enemyMap: MoveDecoder = {
@@ -68,6 +68,26 @@ const determineWinner = (me: Move, enemy: Move): Outcome => {
       return "draw";
     default:
       return unreachable(me);
+  }
+};
+
+const determinePlay = (outcome: Outcome, enemy: Move): Move | undefined => {
+  if (outcome === "draw") return enemy;
+  switch (enemy) {
+    case "paper":
+      if (outcome === "win") return "scissors";
+      if (outcome === "loss") return "rock";
+    /* falls through */
+    case "rock":
+      if (outcome === "win") return "paper";
+      if (outcome === "loss") return "scissors";
+      break;
+    case "scissors":
+      if (outcome === "win") return "rock";
+      if (outcome === "loss") return "paper";
+      break;
+    default:
+      unreachable(enemy);
   }
 };
 
