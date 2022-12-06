@@ -47,7 +47,6 @@ for (let i = 0; i <= numCols; i++) {
 
 for (let lineIdx = 0; lineIdx < diagram.length - 1; lineIdx++) {
   const line = diagram[lineIdx];
-  console.log(line);
   for (let i = 1; i <= numCols; i++) {
     const index = colLookupMap.get(i);
     const val = line.charAt(index);
@@ -58,8 +57,6 @@ for (let lineIdx = 0; lineIdx < diagram.length - 1; lineIdx++) {
   }
 }
 
-console.log("stacks ", stacks);
-
 const iterateInstructions = (instructions: string[]) => {
   for (const instruction of instructions) {
     const [, count, , fromIdx, , toIdx] = instruction.split(" ").map(Number);
@@ -68,16 +65,17 @@ const iterateInstructions = (instructions: string[]) => {
 };
 
 const parseInstruction = (fromIdx: number, toIdx: number, count: number) => {
+  const block = [];
   for (let i = 0; i < count; i++) {
     const popped = stacks[fromIdx].pop();
-    if (popped) stacks[toIdx].push(popped);
+    if (popped) block.unshift(popped);
   }
+  stacks[toIdx].push(...block);
 };
 iterateInstructions(instructions);
-console.log("updated stacks ", stacks);
 
 let answer = "";
-stacks.shift();
+stacks.shift(); // pop off first empty stack used to make indexing easier
 stacks.forEach((s) => (answer += s.pop()));
 
 console.log("answer", answer);
